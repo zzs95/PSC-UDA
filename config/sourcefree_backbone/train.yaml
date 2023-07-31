@@ -1,0 +1,65 @@
+MODEL_2D:
+  TYPE: "FCNResNet34"
+  SRC_HEAD: True
+  NUM_CLASSES: 2
+MODEL_3D:
+  TYPE: "SCN"
+  NUM_CLASSES: 2
+DATASET_SOURCE:
+  TRAIN: ("train",)
+  point_num: 100000
+  TYPE: "KITS"
+  KITS:
+    preprocess_dir: "/home/brownradai/Projects/kidney/kidney_public/sampled_lr/Task135_KiTS2021_CT"
+    augmentation:
+      roi_x: 80
+      roi_y: 160
+      roi_z: 160
+      space_x: 2
+      space_y: 2
+      space_z: 2
+DATASET_TARGET:
+  point_num: 100000
+  TRAIN: ("train",)
+  VAL: ("val",)
+  TEST: ("test",)
+  TYPE: "KITS"
+  KITS:
+    preprocess_dir: "/home/brownradai/Projects/kidney/kidney_public/sampled_lr/Task135_KiTS2021_CT_case20"
+    augmentation:
+      space_x: 2
+      space_y: 2
+      space_z: 2
+      roi_x: 80
+      roi_y: 160
+      roi_z: 160
+DATALOADER:
+  NUM_WORKERS: 10
+OPTIMIZER:
+  TYPE: "Adam"
+#  BASE_LR: 0.0001
+  BASE_LR: 0.0002
+SCHEDULER:
+  TYPE: "MultiStepLR"
+  MultiStepLR:
+    gamma: 0.1
+    milestones: (9000, 12500)
+  MAX_ITERATION: 15000
+TRAIN:
+  BATCH_SIZE: 2
+  LOG_PERIOD: 25
+  SUMMARY_PERIOD: 50
+  CHECKPOINT_PERIOD: 1000
+  CLASS_WEIGHTS: [0.001, 1.]
+  ignore_label: -10
+  XMUDA:
+    lambda_seg2d: 1
+    lambda_xm: 0.05
+    lambda_mask: 0.001
+VAL:
+  BATCH_SIZE: 1
+  LOG_PERIOD: 20
+  PERIOD: 1000
+TEST:
+  BATCH_SIZE: 1
+#OUTPUT_DIR: "path/to/output/directory/@"  #  @ will be replaced with config path, e.g. nuscenes/usa_singapore/xmuda
