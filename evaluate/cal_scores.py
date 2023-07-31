@@ -123,7 +123,7 @@ if __name__ == '__main__':
                 case_name = list(x.keys())[0]
                 score_names = list(x[case_name].keys())
                 with open(csv_filename, 'a+') as f:
-                    fcntl.flock(f.fileno(), fcntl.LOCK_EX)  # 加锁
+                    fcntl.flock(f.fileno(), fcntl.LOCK_EX)  
                     line = case_name + ','
                     for s_name in score_names:
                         scores = x[case_name][s_name]
@@ -134,13 +134,13 @@ if __name__ == '__main__':
                     f.write(line)
             labels_path = join(gt_path, setname, 'labelsTr')
             labels_files = subfiles(labels_path)
-            p = Pool(36)  # 开启进程
+            p = Pool(36)  
             for label_file in labels_files:
                 gt_name = os.path.split(label_file)[-1].replace('.nii.gz', '').replace('_0000', '')
 
                 # out_dict = cal_prosecss(exp_result_list, label_file, setname, exp, gt_name)
                 # setmycallback(out_dict)
-                p.apply_async(cal_prosecss, (label_file, setname, exp, gt_name), callback=setmycallback)#调用进程
+                p.apply_async(cal_prosecss, (label_file, setname, exp, gt_name), callback=setmycallback)
             p.close()
             p.join()
     print()
