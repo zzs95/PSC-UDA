@@ -62,7 +62,7 @@ def process_file(file_name):
 if __name__ == '__main__':
     output_root = '../output/'
     pred_root = '../output_mask/'
-    gt_root = '/home/brownradai/Projects/kidney/kidney_public/sampled_lr'
+    gt_root = '../Projects/kidney/kidney_public/sampled_lr'
     set_name_dict = {
         "AMOS": "Task133_AMOS_CT",
         "t1in": "Task037_CHAOS_T1InPhase",
