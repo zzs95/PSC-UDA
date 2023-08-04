@@ -38,18 +38,18 @@ def train(cfg, output_dir='', run_name='', logger=None):
     # build edge model
     model_edge, train_metric_src, train_metric_trg = build_model_edge(cfg)
     logger.info('Build EDGE model:\n{}'.format(str(model_edge)))
-    num_params = sum(param.numel() for param in model_edge.parameters())
-    print('#Parameters: {:.2e}'.format(num_params))
+    # num_params = sum(param.numel() for param in model_edge.parameters())
+    # print('#Parameters: {:.2e}'.format(num_params))
     # build img model
     model_img = build_model_img(cfg)
     logger.info('Build IMG model:\n{}'.format(str(model_img)))
-    num_params = sum(param.numel() for param in model_img.parameters())
-    print('#Parameters: {:.2e}'.format(num_params))
+    # num_params = sum(param.numel() for param in model_img.parameters())
+    # print('#Parameters: {:.2e}'.format(num_params))
     # build cross modal learning head
     LH_KD = build_KD(cfg)
     logger.info('Build KD model learning head:\n{}'.format(str(LH_KD)))
-    num_params = sum(param.numel() for param in LH_KD.parameters())
-    print('#Parameters: {:.2e}'.format(num_params))
+    # num_params = sum(param.numel() for param in LH_KD.parameters())
+    # print('#Parameters: {:.2e}'.format(num_params))
 
     model_img = model_img.cuda()
     model_edge = model_edge.cuda()
@@ -131,7 +131,7 @@ def train(cfg, output_dir='', run_name='', logger=None):
     logger.info('Start training from iteration {}'.format(start_iteration))
 
     # add metrics
-    train_metric_logger = init_metric_logger([train_metric_src])
+    train_metric_logger = init_metric_logger([train_metric_src, train_metric_trg])
     val_metric_logger = MetricLogger(delimiter='  ')
 
 
@@ -189,10 +189,10 @@ def train(cfg, output_dir='', run_name='', logger=None):
         with torch.no_grad():
             train_metric_src.update_dict(data_batch_src)
             train_metric_logger.update(loss_total_src=data_batch_src['loss'],)
-            train_metric_logger.update(loss_main_ce_src=data_batch_src['loss_main_ce'],)
-            train_metric_logger.update(loss_main_lovasz_src=data_batch_src['loss_main_lovasz'],)
-            train_metric_logger.update(loss_edge_seg_fuse_src=data_batch_src['loss_edge_seg_fuse_src'],)
-            train_metric_logger.update(loss_edge_seg_img_src=data_batch_src['loss_edge_seg_img_src'],)
+            train_metric_logger.update(loss_pred_edge_src=data_batch_src['loss_pred_edge_src'],)
+            train_metric_logger.update(loss_pred_img_src=data_batch_src['loss_pred_img_src'],)
+            train_metric_logger.update(loss_seg_fuse_src=data_batch_src['loss_seg_fuse_src'],)
+            train_metric_logger.update(loss_seg_pts_src=data_batch_src['loss_seg_pts_src'],)
         del data_batch_src
 
         # ---------------------------------------------------------------------------- #
@@ -220,9 +220,9 @@ def train(cfg, output_dir='', run_name='', logger=None):
         with torch.no_grad():
             train_metric_trg.update_dict(data_batch_trg)
             train_metric_logger.update(loss_total_trg=data_batch_trg['loss'],)
-            train_metric_logger.update(loss_edge_seg_fuse_f_trg=data_batch_trg['loss_edge_seg_fuse_f_trg'],)
-            train_metric_logger.update(loss_edge_seg_img_trg=data_batch_trg['loss_edge_seg_img_trg'],)
-            train_metric_logger.update(loss_edge_seg_pts_trg=data_batch_trg['loss_edge_seg_pts_trg'],)
+            train_metric_logger.update(loss_pred_img_trg=data_batch_trg['loss_pred_img_trg'],)
+            train_metric_logger.update(loss_seg_pts_trg=data_batch_trg['loss_seg_pts_trg'],)
+            train_metric_logger.update(loss_seg_fuse_trg=data_batch_trg['loss_seg_fuse_trg'],)
         # del data_batch_trg
         # ---------------------------------------------------------------------------- #
         # Optimizer
