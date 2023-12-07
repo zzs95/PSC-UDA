@@ -1,4 +1,4 @@
-# SMC-UDA
+# PSC-UDA
 
-This repo contains experimental code for the paper "SMC-UDA: Structure-modal constraint unsupervised domain adaptation for kidney
+This repo contains experimental code for the paper "PSC-UDA: Point cloud structure constraint unsupervised domain adaptation for kidney
 detection and tumor aided segmentation".
